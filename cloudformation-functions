@@ -228,22 +228,27 @@ cf_param() {
 cf_asg() {
   if [ -z "$1" ] ; then echo "Usage: $FUNCNAME stack"; return 1; fi
   local stack="$(basename $1 .json)"
-  aws cloudformation describe-stack-resources --stack-name $stack --query "StackResources[?ResourceType==\`AWS::AutoScaling::AutoScalingGroup\`].PhysicalResourceId" --output text
+  local output="$(aws cloudformation describe-stack-resources --stack-name $stack --query "StackResources[?ResourceType==\`AWS::AutoScaling::AutoScalingGroup\`].PhysicalResourceId" --output text)"
+  if [ -z "$output" ]; then >&2 echo "Stack has no ASGs"; return 1; fi
+  echo $output
 }
 
 cf_asg_instances() {
-  if [ -z "$1" ] ; then echo "Usage: $FUNCNAME stack"; return 1; fi
+  if [ -z "$1" ]; then echo "Usage: $FUNCNAME stack"; return 1; fi
   local stack="$(basename $1 .json)"
-  local instance_ids="$(aws autoscaling describe-auto-scaling-groups --auto-scaling-group-names "$(cf_asg $stack)" --query "AutoScalingGroups[].Instances[].[InstanceId]" --output text)"
-  aws ec2 describe-instances --instance-ids $instance_ids --query "Reservations[].Instances[].[PrivateIpAddress, PublicIpAddress, InstanceId, State.Name, InstanceType, join(\` \`, [Tags[?Key==\`Name\`].Value][])]" --output text
+  local asg="$(cf_asg $stack)"; if [ -z "$asg" ]; then return 1; fi
+  instance_ids="$(aws autoscaling describe-auto-scaling-groups --auto-scaling-group-names "$asg" --query "AutoScalingGroups[].Instances[].[InstanceId]" --output text)"
+  if [ -z "$instance_ids" ]; then >&2 echo "ASG has no running instances"; return 1; fi
+  aws ec2 describe-instances --instance-ids $instance_ids --query 'Reservations[].Instances[].[InstanceId, State.Name, StateTransitionReason, InstanceType, PrivateIpAddress, PublicIpAddress, join(` `, [Tags[?Key==`Name`].Value][]), join(` `, [Tags[?Key==`contact`].Value][]), LaunchTime]' --output text
 }
 
 cf_asg_instance_ssh() {
   if [ -z "$1" ] ; then echo "Usage: $FUNCNAME stack [user]"; return 1; fi
   local stack="$(basename $1 .json)"
-  local user=${2:-root}
-  local instance_ip="$(cf_asg_instances $stack | head -1 | cut -f 1)"
-  ssh ${user}@${instance_ip}
+  local user=${2}
+  local instance_id="$(cf_asg_instances $stack | head -1 | cut -f 1)"
+  if [ -z "$instance_id" ]; then >&2 echo "no-instances"; return 1; fi
+  instance_ssh $instance_id $user
 }
 
 ## Start instance
@@ -270,7 +275,7 @@ cf_asg_scale_down() {
   if [ -z "$1" ] ; then echo "Usage: $FUNCNAME stack [desired_capacity]"; return 1; fi
   local stack="$(basename $1 .json)"
   local desired_capacity="${2:-0}"
-  local instances="$(cf_asg_instances $stack | cut -f 3)"
+  local instances="$(cf_asg_instances $stack | cut -f 1)"
   if [ -n "$instances" ]; then
     aws autoscaling set-desired-capacity --auto-scaling-group-name "$(cf_asg $stack)" --desired-capacity $desired_capacity
     echo -n "Waiting for instances to terminate ($instances)..."
