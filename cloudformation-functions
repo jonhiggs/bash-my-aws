@@ -325,6 +325,18 @@ cf_asg_instance_ssh() {
   ssh ${user}@${instance_ip}
 }
 
+cf_asg_suspend_terminate() {
+  if [ -z "$1" ] ; then echo "Usage: $FUNCNAME stack"; return 1; fi
+  local stack="$(basename $1 .json)"
+  aws autoscaling suspend-processes --auto-scaling-group-name $(cf_asg $stack | cut -f 1) --scaling-processes Terminate
+}
+
+cf_asg_resume_terminate() {
+  if [ -z "$1" ] ; then echo "Usage: $FUNCNAME stack"; return 1; fi
+  local stack="$(basename $1 .json)"
+  aws autoscaling resume-processes --auto-scaling-group-name $(cf_asg $stack | cut -f 1) --scaling-processes Terminate
+}
+
 ## Start instance
 cf_asg_scale_up() {
   # XXX don't scale down
