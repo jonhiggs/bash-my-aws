@@ -5,10 +5,14 @@
 # List, run, start, stop and ssh to Amazon AWS EC2 instances
 
 # Fields to include when listing EC2 Instances
-INSTANCE_OUTPUT="[InstanceId, State.Name, InstanceType, PrivateIpAddress, PublicIpAddress, join(\` \`, [Tags[?Key==\`Name\`].Value][]), join(\` \`, [Tags[?Key==\`contact\`].Value][]), LaunchTime]"
+if [[ -z ${INSTANCE_OUTPUT} ]]; then
+  INSTANCE_OUTPUT="[InstanceId, State.Name, InstanceType, PrivateIpAddress, PublicIpAddress, join(\` \`, [Tags[?Key==\`Name\`].Value][]), join(\` \`, [Tags[?Key==\`contact\`].Value][]), LaunchTime]"
+fi
 
 #  Fields to include when listing EBS volumes
-VOLUME_OUTPUT='[VolumeId, Size, VolumeType, State, CreateTime]'
+if [[ -z ${VOLUME_OUTPUT} ]]; then
+  VOLUME_OUTPUT='[VolumeId, Size, VolumeType, State, CreateTime]'
+fi
 
 instances() {
   aws ec2 describe-instances $filters --query "Reservations[].Instances[].${INSTANCE_OUTPUT}" --output text | grep "$1"
