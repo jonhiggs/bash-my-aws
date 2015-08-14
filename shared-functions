@@ -1,0 +1,33 @@
+if [[ -z ${INSTANCE_OUTPUT} ]]; then
+  INSTANCE_OUTPUT="[
+    InstanceId,
+    State.Name,
+    InstanceType,
+    PrivateIpAddress,
+    PublicIpAddress,
+    join(\` \`, [Tags[?Key==\`Name\`].Value][]),
+    join(\` \`, [Tags[?Key==\`contact\`].Value][]),
+    LaunchTime
+  ]"
+fi
+
+if [[ -z ${VOLUME_OUTPUT} ]]; then
+  VOLUME_OUTPUT='[VolumeId, Size, VolumeType, State, CreateTime]'
+fi
+
+if [[ -z ${INSTANCE_OUTPUT} ]]; then
+  INSTANCE_PROFILE_OUTPUT="[
+    Profile
+  ]"
+fi
+
+__read_inputs() {
+  # Check $@ and /dev/stdin for list of instances-ids.
+  if [[ -t 0 ]]; then
+    [[ -z $@ ]] || echo $@
+  else
+    cat /dev/stdin | awk '{ print $1 }'
+  fi
+}
+
+# vim: ft=sh

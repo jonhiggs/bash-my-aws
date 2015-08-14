@@ -1,36 +1,12 @@
 #!/bin/bash
+source $(dirname ${BASH_SOURCE[0]})/shared-functions
 
 # instance-functions.sh
 #
 # List, run, start, stop and ssh to Amazon AWS EC2 instances
 
 # Fields to include when listing EC2 Instances
-if [[ -z ${INSTANCE_OUTPUT} ]]; then
-  INSTANCE_OUTPUT="[
-    InstanceId,
-    State.Name,
-    InstanceType,
-    PrivateIpAddress,
-    PublicIpAddress,
-    join(\` \`, [Tags[?Key==\`Name\`].Value][]),
-    join(\` \`, [Tags[?Key==\`contact\`].Value][]),
-    LaunchTime
-  ]"
-fi
-
 #  Fields to include when listing EBS volumes
-if [[ -z ${VOLUME_OUTPUT} ]]; then
-  VOLUME_OUTPUT='[VolumeId, Size, VolumeType, State, CreateTime]'
-fi
-
-__read_inputs() {
-  # Check $@ and /dev/stdin for list of instances-ids.
-  if [[ -t 0 ]]; then
-    [[ -z $@ ]] || echo $@
-  else
-    cat /dev/stdin | awk '{ print $1 }'
-  fi
-}
 
 instances() {
   # query
