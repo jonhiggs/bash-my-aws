@@ -28,7 +28,7 @@ __read_inputs() {
   if [[ -t 0 ]]; then
     [[ -z $@ ]] || echo $@
   else
-    cat /dev/stdin
+    cat /dev/stdin | awk '{ print $1 }'
   fi
 }
 
