@@ -83,6 +83,14 @@ instance_userdata() {
   done
 }
 
+instance_types() {
+  # query + detail
+  INSTANCE_OUTPUT="[ InstanceId InstanceType ]" \
+    instances $(__read_inputs $@)               |
+      awk '{ print $2 }'                        |
+      sort | uniq -c
+}
+
 instances_without_tag() {
   if [ -z "$1" ] ; then echo "Usage: $FUNCNAME tag_key [tag_value]"; return 1; fi
   local tag_key=$1
@@ -150,12 +158,6 @@ instance_stop() {
 instance_terminate() {
   aws ec2 modify-instance-attribute --attribute disableApiTermination --value false --instance-id $1
   aws ec2 terminate-instances --instance-id $1
-}
-
-instance_types() {
-  aws ec2 describe-instances --filters Name=instance-state-name,Values=running --query "Reservations[].Instances[].[InstanceType]" --output text | sort | uniq -c
-}
-
 }
 
 instance_volumes() {
