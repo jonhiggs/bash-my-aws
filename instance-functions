@@ -14,12 +14,17 @@ if [[ -z ${VOLUME_OUTPUT} ]]; then
   VOLUME_OUTPUT='[VolumeId, Size, VolumeType, State, CreateTime]'
 fi
 
-instances() {
+__read_inputs() {
+  # Check $@ and /dev/stdin for list of instances-ids.
   if [[ -t 0 ]]; then
-    [[ -z $@ ]] || instance_ids="--instance-ids $@"
+    [[ -z $@ ]] || echo "--instance-ids $@"
   else
-    instance_ids="--instance-ids $(cat /dev/stdin)"
+    echo "--instance-ids $(cat /dev/stdin)"
   fi
+}
+
+instances() {
+  instance_ids=$(__read_inputs $@)
 
   if [[ ! -z ${INSTANCE_FILTERS} ]]; then
     filters="--filters ${INSTANCE_FILTERS}"
