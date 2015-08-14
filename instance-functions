@@ -47,6 +47,10 @@ instances_with_tag() {
   else
     aws ec2 describe-instances --output text --query "Reservations[].Instances[?contains(Tags[?Key==\`$tag_key\`].Value[], \`$tag_value\`) == \`true\`][].${INSTANCE_OUTPUT}"
   fi
+instance_tag() {
+  # detail
+  instance_ids=$(__read_inputs $@)
+  INSTANCE_OUTPUT="[ InstanceId Tags ]" instances $instance_ids
 }
 
 instances_without_tag() {
