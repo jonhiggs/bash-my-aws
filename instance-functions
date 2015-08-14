@@ -33,6 +33,7 @@ __read_inputs() {
 }
 
 instances() {
+  # query
   instance_ids=$(__read_inputs $@)
   [[ -z $instance_ids ]] || instance_ids="--instance-ids ${instance_ids}"
 
@@ -48,6 +49,7 @@ instances() {
 }
 
 instances_with_tag() {
+  # query
   if [ -z "$1" ] ; then echo "Usage: $FUNCNAME tag_key [tag_value]"; return 1; fi
   local tag_name=$1
   local tag_value=$2
