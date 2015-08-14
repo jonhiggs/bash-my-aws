@@ -15,7 +15,21 @@ if [[ -z ${VOLUME_OUTPUT} ]]; then
 fi
 
 instances() {
-  aws ec2 describe-instances $filters --query "Reservations[].Instances[].${INSTANCE_OUTPUT}" --output text | grep "$1"
+  if [[ -t 0 ]]; then
+    [[ -z $@ ]] || instance_ids="--instance-ids $@"
+  else
+    instance_ids="--instance-ids $(cat /dev/stdin)"
+  fi
+
+  if [[ ! -z ${INSTANCE_FILTERS} ]]; then
+    filters="--filters ${INSTANCE_FILTERS}"
+  else
+    filters=""
+  fi
+
+  aws ec2 describe-instances $filters $instance_ids \
+    --query "Reservations[].Instances[].${INSTANCE_OUTPUT}" \
+    --output text
 }
 
 instances_with_tag() {
