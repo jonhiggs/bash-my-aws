@@ -1,3 +1,20 @@
 #!/bin/bash
 source $(dirname ${BASH_SOURCE[0]})/shared-functions
 
+
+instance_profiles() {
+  # query
+  instance_profile_ids=$(__read_inputs $@)
+
+  if [[ ! -z ${INSTANCE_PROFILE_FILTERS} ]]; then
+    filters="--filters ${INSTANCE_PROFILE_FILTERS}"
+  else
+    filters=""
+  fi
+
+  for instance_profile_id in $instance_profile_ids; do
+    local query+="--query \"InstanceProfiles[?InstanceProfileId==\`$instance_profile_id\`].Roles[].RoleName\""
+  done
+
+  aws iam list-instance-profiles $query --output text
+}
