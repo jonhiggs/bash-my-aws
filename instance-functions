@@ -59,7 +59,23 @@ instances_with_tag() {
 instance_tag() {
   # detail
   instance_ids=$(__read_inputs $@)
-  INSTANCE_OUTPUT="[ InstanceId Tags ]" instances $instance_ids
+
+  # FIXME: The code and the output are all too hard to read.
+  INSTANCE_OUTPUT="[ InstanceId Tags ]" \
+    instances $instance_ids             |
+    tr '\t' ","                         |
+    sed s/^/Name=/g                     |
+    sed s/,/,Values=/g                  |
+    sed -E 's/Name=(i-[0-9a-f]{8})/\1/' |
+    tr "\n" " "
+  echo
+
+  # get instance ids
+  # seperate name and values with comma
+  # label the names with Name
+  # lavel the values with Value
+  # strip the name from the instance id.
+  # join it all up.
 }
 
 instances_without_tag() {
