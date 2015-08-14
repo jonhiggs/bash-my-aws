@@ -71,6 +71,17 @@ instance_console_output() {
   done
 }
 
+instance_userdata() {
+  # detail
+  for instance_id in $(__read_inputs $@); do
+    aws ec2 describe-instance-attribute         \
+      --attribute userData                      \
+      --instance-id $instance_id                \
+      --query UserData                          \
+      --output text                             |
+        base64 --decode
+  done
+}
 
 instances_without_tag() {
   if [ -z "$1" ] ; then echo "Usage: $FUNCNAME tag_key [tag_value]"; return 1; fi
@@ -145,10 +156,6 @@ instance_types() {
   aws ec2 describe-instances --filters Name=instance-state-name,Values=running --query "Reservations[].Instances[].[InstanceType]" --output text | sort | uniq -c
 }
 
-instance_userdata() {
-  if [ -z "$1" ] ; then echo "Usage: $FUNCNAME instance-id"; return 1; fi
-  local instance_id=$1
-  aws ec2 describe-instance-attribute --attribute userData --instance-id $instance_id --query UserData --output text | base64 --decode
 }
 
 instance_volumes() {
