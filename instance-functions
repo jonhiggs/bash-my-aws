@@ -17,14 +17,15 @@ fi
 __read_inputs() {
   # Check $@ and /dev/stdin for list of instances-ids.
   if [[ -t 0 ]]; then
-    [[ -z $@ ]] || echo "--instance-ids $@"
+    [[ -z $@ ]] || echo $@
   else
-    echo "--instance-ids $(cat /dev/stdin)"
+    cat /dev/stdin
   fi
 }
 
 instances() {
   instance_ids=$(__read_inputs $@)
+  [[ -z $instance_ids ]] || instance_ids="--instance-ids ${instance_ids}"
 
   if [[ ! -z ${INSTANCE_FILTERS} ]]; then
     filters="--filters ${INSTANCE_FILTERS}"
