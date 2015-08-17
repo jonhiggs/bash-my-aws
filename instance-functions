@@ -112,6 +112,20 @@ instance_type() {
     instances $(__read_inputs $@)
 }
 
+instance_stack() {
+  # detail
+  INSTANCE_OUTPUT="[ InstanceId Tags ]" \
+    instances $(__read_inputs $@)       |
+    grep -E -e "i-[0-9a-f]{8}" -e "aws:cloudformation:stack-id"  |
+    cut -d: -f8                         |
+    cut -d/ -f2                         |
+    sed -E 's/(i-[0-9a-f]{8})/\1:/'     |
+    sed -E 's/([^\:])$/\1;/g'           |
+    tr -d '\n'                          |
+    tr ':' ' '                          |
+    tr ';' '\n'
+}
+
 #instance_role() {
 #  instance_ids=$(__read_inputs $@)
 #  instance_iam_profile $instance_ids |
