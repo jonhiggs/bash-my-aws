@@ -102,8 +102,13 @@ instance_asg() {
   # detail
   INSTANCE_OUTPUT="[ InstanceId Tags ]" \
     instances $(__read_inputs $@)       |
-    grep aws:autoscaling:groupName      |
-    awk '{ print $2 }'
+    grep -E -e "i-[0-9a-f]{8}" -e "aws:autoscaling:groupName"  |
+    sed -E 's/aws:autoscaling:groupName//g' |
+    sed -E 's/(i-[0-9a-f]{8})/\1:/'     |
+    sed -E 's/([^\:])$/\1;/g'           |
+    tr -d '\n'                          |
+    tr ':' ' '                          |
+    tr ';' '\n'
 }
 
 instance_type() {
