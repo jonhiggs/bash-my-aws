@@ -23,11 +23,12 @@ fi
 
 __read_inputs() {
   # Check $@ and /dev/stdin for list of resources.
-  if [[ -t 0 ]]; then
-    [[ -z $@ ]] || echo $@
+  if [[ -t 0 ]] || [[ ! -z $@ ]]; then
+    [[ -z $@ ]] || x=$@
   else
-    cat /dev/stdin | awk '{ print $1 }'
+    x=$(cat /dev/stdin | awk '{ print $1 }')
   fi
+  echo $x
 }
 
 # vim: ft=sh
