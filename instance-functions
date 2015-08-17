@@ -98,6 +98,14 @@ instance_volumes() {
     instances $(__read_inputs $@)
 }
 
+instance_asg() {
+  # detail
+  INSTANCE_OUTPUT="[ InstanceId Tags ]" \
+    instances $(__read_inputs $@)       |
+    grep aws:autoscaling:groupName      |
+    awk '{ print $2 }'
+}
+
 #instance_role() {
 #  instance_ids=$(__read_inputs $@)
 #  instance_iam_profile $instance_ids |
