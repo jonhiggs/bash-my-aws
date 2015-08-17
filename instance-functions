@@ -106,6 +106,12 @@ instance_asg() {
     awk '{ print $2 }'
 }
 
+instance_type() {
+  # detail
+  INSTANCE_OUTPUT="[ InstanceId InstanceType ]" \
+    instances $(__read_inputs $@)
+}
+
 #instance_role() {
 #  instance_ids=$(__read_inputs $@)
 #  instance_iam_profile $instance_ids |
