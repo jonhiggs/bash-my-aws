@@ -40,7 +40,7 @@ TODO: lets talk about the details.
 
 Some example usage of this function would be:
 
-    $ bma_<resources>
+    $ <resources>
     resource_id1
     resource_id2
     resource_id3
@@ -54,7 +54,7 @@ TODO: lets talk about the details.
 
 Some example usage of this function would be:
 
-    $ bma_<resource> <resource_id>
+    $ <resource> <resource_id>
     attribute1: value1
     attribute2: value2
 
@@ -84,6 +84,6 @@ TODO: lets talk about the details.
 
 Some example usage of this function would be:
 
-    $ bma_<resource>_<action> <resource_id>
+    $ <resource>_<action> <resource_id>
 
 
