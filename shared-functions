@@ -24,7 +24,7 @@ fi
 __read_inputs() {
   # Check $@ and /dev/stdin for list of resources.
   if [[ -t 0 ]] || [[ ! -z $@ ]]; then
-    [[ -z $@ ]] || x=$@
+    x=$@
   else
     x=$(cat /dev/stdin | awk '{ print $1 }')
   fi
