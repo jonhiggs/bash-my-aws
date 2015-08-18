@@ -25,7 +25,7 @@ __read_inputs() {
   if [[ -t 0 ]] || [[ -n $@ ]]; then
     echo $@
   else
-    cat /dev/stdin | awk '{ print $1 }'
+    awk '{ print $1 }' </dev/stdin
   fi
 }
 
