@@ -111,6 +111,12 @@ instance_asg() {
     tr ';' '\n'
 }
 
+#instance_elb() {
+#}
+
+#instance_launch_config() {
+#}
+
 instance_type() {
   # detail
   INSTANCE_OUTPUT="[ InstanceId InstanceType ]" \
