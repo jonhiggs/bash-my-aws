@@ -58,6 +58,23 @@ Some example usage of this function would be:
     attribute1: value1
     attribute2: value2
 
+Some example responses:
+
+    $ instance_security_groups i-abcd1234
+    sg-00000001
+    sg-00000002
+    sg-00000003
+    sg-00000004
+
+    $ security_group_rules
+    TODO: I'm not sure yet how to present a security group rule.
+
+    $ instance_type i-abcd1234
+    c3.large
+
+    $ instance_type_memory c3.large
+    3.75
+
 
 ## Action Functions
 
