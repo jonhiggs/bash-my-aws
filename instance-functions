@@ -21,7 +21,7 @@ instances() {
 
   aws ec2 describe-instances $filters $instance_ids \
     --query "Reservations[].Instances[].${INSTANCE_OUTPUT}" \
-    --output text
+    --output ${BMA_OUTPUT}
 }
 
 instances_tagged() {

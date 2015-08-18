@@ -1,3 +1,7 @@
+if [[ -z ${BMA_OUTPUT} ]]; then
+  BMA_OUTPUT="text"
+fi
+
 if [[ -z ${INSTANCE_OUTPUT} ]]; then
   INSTANCE_OUTPUT="[
     InstanceId,
