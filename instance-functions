@@ -118,9 +118,12 @@ instance_asg() {
 #}
 
 instance_type() {
-  # detail
+  # detail. returns an instance_type resource.
   INSTANCE_OUTPUT="[ InstanceId InstanceType ]" \
-    instances $(__read_inputs $@)
+    instances $(__read_inputs $@) |
+    awk '{ print $2 }' |
+    sort |
+    uniq
 }
 
 instance_stack() {
