@@ -30,6 +30,21 @@ In my opinion, neither of the current patterns are perfect. I have two propositi
 
 2. We rename the CloudFormation functions to `bma_stack`. I believe that `awscli`  made a mistake to use the AWS service name in their namespace. An edge case exists when a service is responsible for more than one type of resource. For example, EC2 is responsible for both instances and security groups. To accommodate that fact, your command could be something like `bma_ec2_instance_create` where other services which only create a single type of resource would be namespaced `bma_cfn_create`. Also you are not creating the service, you're creating a resource. People extending the app would be inclined to name their function 'bma_cfn_stack_create'. I for one like short function names.
 
+## Resources
+
+This is a partial list of resources, with possible alternative names in brackets.
+
+- asg               (autoscaling_group)
+- bucket
+- elb               (load_balancer)
+- instance
+- instance_type
+- rds               (relational_database)
+- dynamodb          (relational_database)
+- sg                (security_group)
+- stack             (cloudformation_stack)
+
+
 ## Query Functions
 
 Query functions are always namespaced under the plural of the resource.
