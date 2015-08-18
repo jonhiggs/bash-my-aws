@@ -76,19 +76,20 @@ Some example usage of this function would be:
 Some example responses:
 
     $ instance_security_groups i-abcd1234
-    sg-00000001
-    sg-00000002
-    sg-00000003
-    sg-00000004
+    sg-00000001 i-abcd1234
+    sg-00000002 i-abcd1234
+    sg-00000003 i-abcd1234
+    sg-00000004 i-abcd1234
 
     $ security_group_rules
     TODO: I'm not sure yet how to present a security group rule.
 
     $ instance_type i-abcd1234
-    c3.large
+    c3.large i-abcd1234
 
     $ instance_type_memory c3.large
-    3.75
+    3.75 c3.large
+
 
 
 ## Action Functions
