@@ -22,8 +22,7 @@ if [[ -z ${INSTANCE_OUTPUT} ]]; then
 fi
 
 __read_inputs() {
-  # Check $@ and /dev/stdin for list of resources.
-  if [[ -t 0 ]] || [[ ! -z $@ ]]; then
+  if [[ -t 0 ]] || [[ -n $@ ]]; then
     echo $@
   else
     cat /dev/stdin | awk '{ print $1 }'
