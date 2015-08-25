@@ -23,3 +23,12 @@ elb_policy() {
   ELB_OUTPUT="[ LoadBalancerName Policies.OtherPolicies[0] ]" \
     elbs $(__read_inputs $@)
 }
+
+elb_stack() {
+  aws elb describe-tags                           \
+    --load-balancer-names $(__read_inputs $@)     \
+    --query "TagDescriptions[].Tags[][Key Value]" \
+    --output ${BMA_OUTPUT}                        |
+      grep 'aws:cloudformation:stack-name'        |
+      awk '{ print $2 }'
+}
