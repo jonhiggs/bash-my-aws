@@ -1,0 +1,20 @@
+#!/bin/bash
+source $(dirname ${BASH_SOURCE[0]})/shared-functions
+
+# elb-functions.sh
+
+elbs() {
+  # query
+  elbs=$(__read_inputs $@)
+  [[ -z $elbs ]] || instance_ids="--load-balancer-names ${elbs}"
+
+  if [[ ! -z ${ELB_FILTERS} ]]; then
+    filters="--filters ${ELB_FILTERS}"
+  else
+    filters=""
+  fi
+
+  aws elb describe-load-balancers $filters $elbs \
+    --query "LoadBalancerDescriptions[].Instances[].${ELB_OUTPUT}" \
+    --output ${BMA_OUTPUT}
+}
