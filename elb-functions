@@ -6,7 +6,7 @@ source $(dirname ${BASH_SOURCE[0]})/shared-functions
 elbs() {
   # query
   elbs=$(__read_inputs $@)
-  [[ -z $elbs ]] || instance_ids="--load-balancer-names ${elbs}"
+  [[ -z $elbs ]] || elbs="--load-balancer-names ${elbs}"
 
   if [[ ! -z ${ELB_FILTERS} ]]; then
     filters="--filters ${ELB_FILTERS}"
