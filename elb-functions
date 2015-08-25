@@ -21,7 +21,7 @@ elbs() {
 
 elb_policy() {
   ELB_OUTPUT="[ LoadBalancerName Policies.OtherPolicies[] ]" \
-    elbs $(__read_inputs $@) | tr -d '\n'; echo
+    elbs $(__read_inputs $@) | tr '\n' ' '; echo
 }
 
 elb_stack() {
