@@ -15,6 +15,11 @@ elbs() {
   fi
 
   aws elb describe-load-balancers $filters $elbs \
-    --query "LoadBalancerDescriptions[].Instances[].${ELB_OUTPUT}" \
+    --query "LoadBalancerDescriptions[].${ELB_OUTPUT}" \
     --output ${BMA_OUTPUT}
+}
+
+elb_policy() {
+  ELB_OUTPUT="[ LoadBalancerName Policies.OtherPolicies[0] ]" \
+    elbs $(__read_inputs $@)
 }
