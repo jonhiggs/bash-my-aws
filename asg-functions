@@ -19,3 +19,23 @@ asgs() {
     --output ${BMA_OUTPUT}
 }
 
+asg_desired_capacity() {
+  aws autoscaling describe-auto-scaling-groups      \
+    --auto-scaling-group-names $(__read_inputs $@)  \
+    --query 'AutoScalingGroups[].DesiredCapacity'   \
+    --output ${BMA_OUTPUT}
+}
+
+asg_min_size() {
+  aws autoscaling describe-auto-scaling-groups      \
+    --auto-scaling-group-names $(__read_inputs $@)  \
+    --query 'AutoScalingGroups[].MinSize'   \
+    --output ${BMA_OUTPUT}
+}
+
+asg_max_size() {
+  aws autoscaling describe-auto-scaling-groups      \
+    --auto-scaling-group-names $(__read_inputs $@)  \
+    --query 'AutoScalingGroups[].MaxSize'   \
+    --output ${BMA_OUTPUT}
+}
