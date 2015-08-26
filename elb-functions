@@ -32,3 +32,8 @@ elb_stack() {
       grep 'aws:cloudformation:stack-name'        |
       awk '{ print $2 }'
 }
+
+elb_dns_name() {
+  ELB_OUTPUT="[ LoadBalancerName DNSName ]" \
+    elbs $(__read_inputs $@) | tr '\n' ' '; echo
+}
