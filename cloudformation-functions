@@ -39,12 +39,12 @@
 ##
 
 
-# List CF stacks. Optionally filter on stack name.
+# List CloudFormation stacks. Optionally filter on stack name.
 # e.g. 
-#      cf_list foo
+#      stacks foo
 #
 # To make it fly we omit stacks with status of DELETE_COMPLETE
-cf_list() {
+stacks() {
   aws cloudformation list-stacks \
     --stack-status  \
       CREATE_COMPLETE \
@@ -65,8 +65,15 @@ cf_list() {
   --query "StackSummaries[].StackName" \
   --output text | tr '\t' '\n' | sort | grep "$1"
 }
-alias cf_stacks=cf_list
 
+stack_asgs() {
+  stack=$(__read_inputs $@)
+  query="StackResources[?ResourceType=='AWS::AutoScaling::AutoScalingGroup'].PhysicalResourceId"
+  aws cloudformation describe-stack-resources \
+    --stack-name $stack                       \
+    --query ${query}                          \
+    --output ${BMA_OUTPUT}
+}
 
 cf_diff() {
   cf_diff_template $@
