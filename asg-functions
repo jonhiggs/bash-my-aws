@@ -1,0 +1,40 @@
+#!/bin/bash
+source $(dirname ${BASH_SOURCE[0]})/shared-functions
+
+# asg-functions.sh
+
+asgs() {
+  # query
+  asgs=$(__read_inputs $@)
+  [[ -z $asgs ]] || asgs="--auto-scaling-group-names ${asgs}"
+
+  if [[ ! -z ${ASG_FILTERS} ]]; then
+    filters="--filters ${ASG_FILTERS}"
+  else
+    filters=""
+  fi
+
+  aws autoscaling describe-auto-scaling-groups $filters $asgs \
+    --query "AutoScalingGroups[].${ASG_OUTPUT}" \
+    --output ${BMA_OUTPUT}
+}
+
+elb_policy() {
+  ELB_OUTPUT="[ LoadBalancerName Policies.OtherPolicies[] ]" \
+    elbs $(__read_inputs $@) | tr '\n' ' '; echo
+}
+
+elb_stack() {
+  aws elb describe-tags                           \
+    --load-balancer-names $(__read_inputs $@)     \
+    --query "TagDescriptions[].Tags[][Key Value]" \
+    --output ${BMA_OUTPUT}                        |
+      grep 'aws:cloudformation:stack-name'        |
+      awk '{ print $2 }'
+}
+
+elb_dns_name() {
+  ELB_OUTPUT="[ LoadBalancerName DNSName ]" \
+    elbs $(__read_inputs $@) | tr '\n' ' '; echo
+}
+
