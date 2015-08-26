@@ -19,22 +19,3 @@ asgs() {
     --output ${BMA_OUTPUT}
 }
 
-elb_policy() {
-  ELB_OUTPUT="[ LoadBalancerName Policies.OtherPolicies[] ]" \
-    elbs $(__read_inputs $@) | tr '\n' ' '; echo
-}
-
-elb_stack() {
-  aws elb describe-tags                           \
-    --load-balancer-names $(__read_inputs $@)     \
-    --query "TagDescriptions[].Tags[][Key Value]" \
-    --output ${BMA_OUTPUT}                        |
-      grep 'aws:cloudformation:stack-name'        |
-      awk '{ print $2 }'
-}
-
-elb_dns_name() {
-  ELB_OUTPUT="[ LoadBalancerName DNSName ]" \
-    elbs $(__read_inputs $@) | tr '\n' ' '; echo
-}
-
